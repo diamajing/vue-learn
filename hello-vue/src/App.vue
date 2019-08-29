@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import HelloWorld from './components/todoList.vue'
+import HelloWorld from './components/provide.vue'
 
 export default {
   name: 'app',

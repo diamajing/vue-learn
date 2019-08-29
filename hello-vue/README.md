@@ -54,7 +54,60 @@ export default {
 ```
 
 ####  2. 子传父
-
+```
+<template>
+  <div id="app">
+​    <h2>Parent</h2>
+​    <h3>{{msg}}</h3>
+​    <Child1 :title="title1" @getmsg="getmsg"></Child1>
+  </div>
+</template>
+<script>
+import Child1 from '@/components/Child1'
+export default {
+  name: "app",
+  data(){
+​    return {
+​      msg:'',
+​      title1:'我是你爸爸'
+​    }
+  },
+  methods:{
+​    getmsg(msg){
+​      console.log(msg)
+​      this.msg = msg
+​    }
+  },
+  components:{Child1}
+}
+</script>
+<style>
+div{
+  border:1px red solid;
+  padding:20px;
+}
+</style>
+```
+```
+// Child
+<template>
+    <div>
+​        <h2>Child2</h2>
+        <p>{{title}}</p>
+​        <button @click="toParent">传递到父元素</button>
+​    </div>
+</template>
+<script>
+export default {
+​    props:['title'],
+​    methods:{
+​        toParent(){
+​            this.$emit('getmsg','爸爸,我知道错了')
+​        }
+​    }
+}
+</script>
+```
 Vue更推荐单向数据流，所以子组件像修改传递的数据，需要通知父组件来修改，使用$emit触发父元素传递的事件
 ####  3. 兄弟组件
 

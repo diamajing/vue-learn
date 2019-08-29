@@ -246,7 +246,66 @@ function boardcast(eventName, data) {
 ####  7. 没啥关系的组件：event-bus
 如果俩组件没啥关系呢，我们只能使用订阅发布模式来做，并且挂载到Vue.protytype之上，我们来试试，我们称呼这种机制为总线机制，也就是喜闻乐见的 event-bus
 ```
+class Bus {
+  constructor() {
+    // {
+    //   eventName1:[fn1,fn2],
+    //   eventName2:[fn3,fn4],
+    // }
+    this.callbacks = {}
+  }
+  $on(name, fn) {
+    this.callbacks[name] = this.callbacks[name] || []
+    this.callbacks[name].push(fn)
+  }
+  $emit(name, args) {
+    if (this.callbacks[name]) {
+      // 存在 遍历所有callback
+      this.callbacks[name].forEach(cb => cb(args))
+    }
+  }
+}
 
+
+
+Vue.prototype.$bus = new Bus()
+```
+
+使用
+
+```js
+// 使用
+eventBus(){
+    this.$bus.$emit('event-bus','测试eventBus')
+}
+
+// 监听
+this.$bus.$on("event-bus",msg=>{
+    this.msg = '接收event-bus消息:'+ msg
+})
+```
+同时呢，这个vue也是发布订阅模式的，所以我们这里可以偷个懒，新建一个空的vue实例就可以了
+```
+Vue.prototype.$bus = new Vue()
 ```
 ####  8. $attr和$listener
+$attr 和 $listener 是vue 2.4 之后新添加的属性
+使用场景：ABC(父子孙)
+这时候A和 C 希望能通话 这时候就能派上用场了
+1.v-bind属性$attr,保证C组件能够获取到组件传递下来的props(除props属性中声明的属性以外)；
+
+2.而v-bind属性$listeners，则保证C组件能直接调用A组件的方法。
+代码如下
+```
+// A 组件
+
+```
+```
+// B 组件
+```
+```
+// C 组件
+```
+
+这里可以看到
 ####  9. vuex

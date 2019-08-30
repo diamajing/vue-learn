@@ -289,23 +289,125 @@ this.$bus.$on("event-bus",msg=>{
 Vue.prototype.$bus = new Vue()
 ```
 ####  8. $attr和$listener
-$attr 和 $listener 是vue 2.4 之后新添加的属性
-使用场景：ABC(父子孙)
-这时候A和 C 希望能通话 这时候就能派上用场了
-1.v-bind属性$attr,保证C组件能够获取到组件传递下来的props(除props属性中声明的属性以外)；
-
+$attr 和 $listener 是vue 2.4 之后新添加的属性  
+使用场景：ABC(父子孙)  AB(父传子)
+这时候A和 C 希望能通话 这时候就能派上用场了   
+简单介绍一下：$attr 和 $listener  
+        $attr : v-bind属性$attr,继承所有的父组件属性（除了prop传递的属性、class 和 style ;  
+              注：这里有一个inheritAttrs属性：默认值true,继承所有的父组件属性（除props的特定绑定）作为普通的HTML特性应用在子组件的根元素上，如果你不希望组件的根元素继承特性设置inheritAttrs: false,但是class属性会继承.  
+        listeners : 它是一个对象，里面包含了作用在这个组件上所有监听器，可以配合v-on ="$listeners" 将所有的事件监听指向这个组件的某个特定的子元素
 2.而v-bind属性$listeners，则保证C组件能直接调用A组件的方法。
 代码如下
 ```
 // A 组件
+<template>
+    <div>
+        <h1>我是爷爷</h1>
+        我儿子对我说:{{msgBClick}}<br/>
+        我孙子对我说:{{msgCClick}}
+        <B :child="msgB" :grandchild="msgC"  @clickc="clickc"  @getmsg="getmsg"></B>
+      
+    </div>
+</template>
+<script>
+import B from '@/components/B.vue'
+
+export default {
+  name: 'A',
+  data(){
+      return {
+          msgB:"我是来自A ，要传给B",
+          msgC:"我是来自A，要传给C",
+          msgBClick:'',
+          msgCClick:'',
+      }
+  },
+  methods:{
+      getmsg(msg){
+          this.msgBClick = msg;
+      },
+      clickc(data){
+        this.msgCClick = data;
+      }
+  },
+  components: {
+    B 
+  }
+}
+</script>
+<style scoped>
+ div{
+     border: 1px solid red;
+     padding: 30px;
+ }
+</style>
 
 ```
+
 ```
 // B 组件
+<template>
+    <div>
+        <h1>我是爸爸</h1>
+        我爸爸对我说：{{child}}<br/>
+        <button @click="toParent()">与爸爸通话</button>
+        <C v-bind="$attrs" v-on="$listeners"></C> 
+    </div>
+</template>
+<script>
+import C from '@/components/C.vue'
+
+export default {
+  name: 'B',
+  props:['child'],
+  inheritAttrs: false,
+  components: {
+    C 
+  },
+ methods: {
+    toParent() {
+      this.$emit("getmsg", "爸爸,我知道错了");
+    }
+  },
+}
+</script>
+<style scoped>
+ div{
+     border: 1px solid blue;
+     padding: 30px;
+ }
+</style>
 ```
 ```
 // C 组件
+<template>
+    <div>
+        <h1>我是孙子</h1>
+        我爷爷对我说：{{grandchild}}
+        <button @click="clickC()">跟爷爷通话</button>
+    </div>
+</template>
+<script>
+export default {
+    name: 'C',
+    props:['grandchild'],
+    methods:{
+        clickC(){
+          this.$emit('clickc','爷爷!我来救你(来自C)')
+        }
+    }
+
+}
+</script>
+<style scoped>
+div{
+    border: 1px chocolate solid;
+    padding: 30px;
+}
+</style>
 ```
 
 这里可以看到
 ####  9. vuex
+当组件中没有关联关系时,需要实现数据的传递共享,可以使用Vuex  
+

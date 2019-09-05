@@ -27,7 +27,7 @@ app.get('/api/goods', function (req, res) {
 })
 
 const server = app.listen(9082, function () {
-  console.log('Express app server listening on port %d', server.address().port)
+  // console.log('Express app server listening on port %d', server.address().port)
 })
 
 // // 创建axios实例

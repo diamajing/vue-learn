@@ -132,7 +132,21 @@ npm i husky lint-staged -D
 #   Homepage: https://github.com/typicode/husky#readme
 
 ```
+```json
+//json 中文件
+"husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:js",
+      "pre-push": "npm run test"
+    }
+  },
+```
 这里可以刻意写一些错误代码，然后git commit 
+```brach
+/Users/Locke/majing/learn/调研/vue的相关学习/vue-learn/vue-cli3/src/main.js
+  7:1   error  Unexpected console statement  no-console
+  7:20  error  'qw' is not defined           no-undef
+```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -23,11 +23,10 @@ export default {
     // console.log(ret.data,'ddd');
     //用easymock
     // let mock = await this.$axios.get('/easymock/')
-    console.log(mock.data);
+    // console.log(mock.data);
 
     let prod = await this.$axios.get('http://localhost:8080/api/goods')
     this.prod = prod.data.list;
-    // console.log( this.prod);
   },
 }
 </script>

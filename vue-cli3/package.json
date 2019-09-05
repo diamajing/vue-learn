@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "precommit1": "npm run lint"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -22,7 +23,7 @@
     "husky": "^3.0.5",
     "lint-staged": "^9.2.5",
     "vue-template-compiler": "^2.6.10"
-  },
+    },
   "eslintConfig": {
     "root": true,
     "env": {

@@ -19,15 +19,15 @@ export default {
     HelloWorld
   },
   async mounted () {
-    let ret = await this.$axios.get('/api/goods')
-    console.log(ret.data,'ddd');
+    // let ret = await this.$axios.get('/api/goods')
+    // console.log(ret.data,'ddd');
     //用easymock
-    let mock = await this.$axios.get('/easymock/')
+    // let mock = await this.$axios.get('/easymock/')
     console.log(mock.data)
 
     let prod = await this.$axios.get('http://localhost:8080/api/goods')
     this.prod = prod.data.list;
-    console.log( this.prod);
+    // console.log( this.prod);
   },
 }
 </script>

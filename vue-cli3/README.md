@@ -147,6 +147,92 @@ npm i husky lint-staged -D
   7:1   error  Unexpected console statement  no-console
   7:20  error  'qw' is not defined           no-undef
 ```
+每次commit ,都跑全量的eslint，大型项目会贼慢，而且如果推进新规范，上来就好几千个报错，基本不可行，可以使用lins-staged，只能监测当前git中改动的文件  
+
+git push配合docker自动化部署，以后研究一下  
+
+### webpack
+
+vue-cli本身就是基于webpack，复杂项目中，还是要对vue.config.js中做扩展，所以对webpack也是要有一定的熟悉程度的
+，基本配置rules，alise entry， output啥的
+其实手动实现一个webpack打包的原理就是实现了一个__webpack_require__来实现自己的模块化，把代码都缓存在installModules里，代码文件已对象传递进来，key是路径，value是包裹的代码字符串，并把内部的require都被替换成了__webpack_require__,   
+大概的意思就是，我们实现了一个__webpack_require__ 来实现自己的模块化，把代码都缓存在installedModules里，代码文件以对象传递进来，key是路径，value是包裹的代码字符串，并且代码内部的require，都被替换成了__webpack_require__,  如何自己写一个webpack，实现这些打包的逻辑
+1.  loader  
+loader 是一个函数，是做文件转换的
+
+```js
+const marked = require("marked");
+const loaderUtils = require("loader-utils");
+
+module.exports = function (markdown) {
+    // 使用 loaderUtils 来获取 loader 的配置项
+    // this 是构建运行时的一些上下文信息
+    const options = loaderUtils.getOptions(this);
+
+    this.cacheable();
+
+    // 把配置项直接传递给 marked
+    marked.setOptions(options);
+
+    // 使用 marked 处理 markdown 字符串，然后返回
+    return marked(markdown);
+};
+```
+
+2. plugins
+
+ 
+plugins 的实现可以是一个类，plugin 实例中最重要的方式就是 `apply`,该方法在 webpack compiler 安装插件时会被调用一次 `apply` 接收
+webpack complier 对象实例的引用，你可以在compiler 对象实例上注册各种事件钩子函数，来影响webpack 的所有构建流程，以便完成更多其他的构建任务。
+
+```js
+
+class Banner{
+    constructor(content){
+        this.content = content
+    }
+
+    apply(compiler){
+        console.log('plugin执行拉')
+        compiler.hooks.run.on(()=>{
+            console.log('任务开始跑了')
+        })
+        compiler.hooks.emit.on(()=>{
+            console.log(compiler.template)
+            compiler.template = `
+//      ┏┛ ┻━━━━━┛ ┻┓
+//      ┃　　　　　　 ┃
+//      ┃　　　━　　　┃
+//      ┃　┳┛　  ┗┳　┃
+//      ┃　　　　　　 ┃
+//      ┃　　　┻　　　┃
+//      ┃　　　　　　 ┃
+//      ┗━┓　　　┏━━━┛
+//        ┃　　　┃   神兽保佑
+//        ┃　　　┃   代码无BUG！
+//        ┃　　　┗━━━━━━━━━┓
+//        ┃　　　　　　　    ┣┓
+//        ┃　　　　         ┏┛
+//        ┗━┓ ┓ ┏━━━┳ ┓ ┏━┛
+//          ┃ ┫ ┫   ┃ ┫ ┫
+//          ┗━┻━┛   ┗━┻━┛
+            `+compiler.template
+            // compiler.template = `/** ${this.content} */\n`+compiler.template
+            console.log('完成啦 还没写文件')
+        })
+        compiler.hooks.done.on(()=>{
+            // consol
+            console.log('写文件结束')
+        })
+    }
+}
+
+module.exports = Banner
+```
+
+
+
+如何提高webpack编译速度和产出代码的性能，属于性能优化范畴
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

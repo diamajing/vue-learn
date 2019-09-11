@@ -49,6 +49,7 @@
       "pre-push": "npm run test"
     }
   },
+  "precommit": "lint-staged",
     "linters": {
       "src/**/*.js": [
         "prettier --tab-width 4 --write",

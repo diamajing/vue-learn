@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-   <div v-for="msg in prod" :key="msg.id">我是：{{msg.text}}</div>
+   <!-- <div v-for="msg in prod" :key="msg.id">我是：{{msg.text}}</div> -->
     <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from './components/images.vue'
 
 export default {
   name: 'app',

@@ -6,7 +6,6 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "githook:pre-commit": "npm run test",
      "lint:js": "# 检查 js \n  eslint ./src/**/*.js",
      "test": "# 单元测试 \n cross-env NODE_ENV=test mocha tests/"
   },

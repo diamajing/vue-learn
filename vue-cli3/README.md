@@ -229,10 +229,23 @@ class Banner{
 
 module.exports = Banner
 ```
+如何提高webpack编译速度和产出代码的性能，属于性能优化范畴   
 
+### 项目规范最佳实践   
+### vuex  
+vuex 是跨组件传值最佳实现方式
 
-
-如何提高webpack编译速度和产出代码的性能，属于性能优化范畴
+### Vue-router
+### 权限
+####  addRoutes  
+### axios  
+### 多环境  
+### Icon  
+### Typescript
+### 遇到的坑  
+#### 关于iview等其他框架  
+### 可视化
+### 富文本
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

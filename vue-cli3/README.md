@@ -234,6 +234,116 @@ module.exports = Banner
 ### 项目规范最佳实践   
 ### vuex  
 vuex 是跨组件传值最佳实现方式
+  上一篇已经具体分析了组件之间传值的问题，虽然2.4之后有了$listener和$attrs,但是这并不满足，vuex才是终极最佳解决方案  
+  所谓框架的数据管理框架，原则上来说，就是独立团大了，什么事情都交董事长来做，太辛苦了，这里的vuex有这全局变量的意味。  
+  vuex 是专门为了Vue.js 应用程序开发的状态管理模式，它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。vuex也集成到Vue 的官方调试工具 devtools extension，提供了诸如零配置的 time-travel 调试、状态快照导入导出等高级功能。
+  我们可以用vuex帮助我们解决共享状态的问题 并附带了一些框架和概念，如果不是大型单页面应用，用vuex过于冗杂，如果是大型项目,vuex将成为自认而然的选择    
+    
+  Vuex的设计思想，借鉴了flux、Redux，将数据存放到全局的store，再将store挂载到每个Vue的实例组件中，利用Vue.js的细粒度数据响应机制来进行高效的状态更新。 
+   
+  看一下代码
+  ```
+  // 1. 支持vue.use
+let  Vue;
+class Store{
+    constructor(options = {}) {
+        this.name = 'My name is haha';
+        //state 需要响应式
+        // 所以需要Vue 的能力
+        // 这样就是响应式的了
+        this.state = new Vue({
+            data:options.state
+        });
+        this.mutations = options.mutations || {};
+        this.actions = options.actions || {};
+    }
+    commit = (type , arg) => {
+        this.mutations[type](this.state , arg);
+    }
+    dispatch(type,arg){
+        this.actions[type]({
+            commit:this.commit,
+            state:this.state,
+        })
+    }
+}
+function install(_Vue) {
+    Vue = _Vue;
+    Vue.mixin({
+        beforeCreate() {
+            if (this.$options.sttore) {
+                Vue.prototype.$store = this.$options.store;
+            }
+        }
+    })
+}
+// import
+let Vue
+class Store {
+    constructor(options = {}) {
+        this.name = '我就是很骚气'
+        // state需要响应式
+        // 所以需要Vue的能力
+        // 这样就是响应式的了
+        this.state = new Vue({
+            data: options.state
+        })
+        // mutations存储
+        // commit执行mutions
+        this.mutations = options.mutations || {}
+        this.actions = options.actions || {}
+    }
+    commit = (type, arg) => {
+        this.mutations[type](this.state, arg)
+    }
+    dispatch(type, arg) {
+        this.actions[type]({
+            commit: this.commit,
+            state: this.state
+        }, arg)
+    }
+}
+// .use会执行这个函数 穿度Vue
+function install(_Vue) {
+    Vue = _Vue
+    // 执行Vue.use的时候 会执行这个函数
+    Vue.mixin({
+        beforeCreate() {
+            if (this.$options.store) {
+                Vue.prototype.$store = this.$options.store
+            }
+        }
+    })
+}
+
+export default {
+    Store,
+    install
+}
+  ```
+  这里我们会用到vue.use() 这个在源码中的实践主要原理是判断function|object 如果存在就不注册，只会注册一次
+  ```
+  export function initUse (Vue: GlobalAPI) {
+  Vue.use = function (plugin: Function | Object) {
+    const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))
+    if (installedPlugins.indexOf(plugin) > -1) {
+      return this
+    }
+    // additional parameters
+    const args = toArray(arguments, 1)
+    args.unshift(this)
+    if (typeof plugin.install === 'function') {
+      plugin.install.apply(plugin, args)
+    } else if (typeof plugin === 'function') {
+      plugin.apply(null, args)
+    }
+    installedPlugins.push(plugin)
+    return this
+  }
+}
+  ```
+  
+
 
 ### Vue-router
 ### 权限
